@@ -1,0 +1,4 @@
+genre_cluster,n,mean_len,median_len
+Classical/Structured,5401,301.76161359007585,257.453
+Underground/Alternative,5012,302.68910215482884,264.209
+Mainstream/Commercial,4821,225.00809251192723,214.626

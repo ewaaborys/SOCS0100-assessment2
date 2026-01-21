@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Are Songs Really Getting Shorter in Recent Decades?</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="SOCS0100-report_files/libs/clipboard/clipboard.min.js"></script>
+<script src="SOCS0100-report_files/libs/quarto-html/quarto.js"></script>
+<script src="SOCS0100-report_files/libs/quarto-html/popper.min.js"></script>
+<script src="SOCS0100-report_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="SOCS0100-report_files/libs/quarto-html/anchor.min.js"></script>
+<link href="SOCS0100-report_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="SOCS0100-report_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="SOCS0100-report_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="SOCS0100-report_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="SOCS0100-report_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body>
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#introduction-and-social-science-significance" id="toc-introduction-and-social-science-significance" class="nav-link active" data-scroll-target="#introduction-and-social-science-significance"><span class="header-section-number">1</span> Introduction and Social Science Significance</a>
+  <ul class="collapse">
+  <li><a href="#research-questions" id="toc-research-questions" class="nav-link" data-scroll-target="#research-questions"><span class="header-section-number">1.1</span> Research Questions</a></li>
+  </ul></li>
+  <li><a href="#automated-data-collection-api" id="toc-automated-data-collection-api" class="nav-link" data-scroll-target="#automated-data-collection-api"><span class="header-section-number">2</span> Automated Data Collection (API)</a>
+  <ul class="collapse">
+  <li><a href="#reproducible-setup" id="toc-reproducible-setup" class="nav-link" data-scroll-target="#reproducible-setup"><span class="header-section-number">2.1</span> Reproducible Setup</a></li>
+  <li><a href="#define-a-sampling-frame-genre-tags-clusters" id="toc-define-a-sampling-frame-genre-tags-clusters" class="nav-link" data-scroll-target="#define-a-sampling-frame-genre-tags-clusters"><span class="header-section-number">2.2</span> Define a Sampling Frame (genre tags → clusters)</a></li>
+  <li><a href="#build-the-api-query-time-bounded-tag-bounded" id="toc-build-the-api-query-time-bounded-tag-bounded" class="nav-link" data-scroll-target="#build-the-api-query-time-bounded-tag-bounded"><span class="header-section-number">2.3</span> Build the API Query (time-bounded + tag-bounded)</a></li>
+  <li><a href="#ethical-request-management-and-json-parsing-custom-wrapper" id="toc-ethical-request-management-and-json-parsing-custom-wrapper" class="nav-link" data-scroll-target="#ethical-request-management-and-json-parsing-custom-wrapper"><span class="header-section-number">2.4</span> Ethical Request Management and JSON Parsing (Custom Wrapper)</a></li>
+  <li><a href="#reduce-top-of-search-bias-with-reproducible-offset-sampling" id="toc-reduce-top-of-search-bias-with-reproducible-offset-sampling" class="nav-link" data-scroll-target="#reduce-top-of-search-bias-with-reproducible-offset-sampling"><span class="header-section-number">2.5</span> Reduce “top-of-search” Bias with Reproducible Offset Sampling</a></li>
+  <li><a href="#parse-transform-and-clean" id="toc-parse-transform-and-clean" class="nav-link" data-scroll-target="#parse-transform-and-clean"><span class="header-section-number">2.6</span> Parse, Transform and Clean</a></li>
+  </ul></li>
+  <li><a href="#data-exploration-and-contextualisation" id="toc-data-exploration-and-contextualisation" class="nav-link" data-scroll-target="#data-exploration-and-contextualisation"><span class="header-section-number">3</span> Data Exploration and Contextualisation</a>
+  <ul class="collapse">
+  <li><a href="#raw-dataset-overview" id="toc-raw-dataset-overview" class="nav-link" data-scroll-target="#raw-dataset-overview"><span class="header-section-number">3.1</span> Raw Dataset Overview</a></li>
+  <li><a href="#data-structure-and-completeness" id="toc-data-structure-and-completeness" class="nav-link" data-scroll-target="#data-structure-and-completeness"><span class="header-section-number">3.2</span> Data Structure and Completeness</a></li>
+  <li><a href="#variable-dictionary" id="toc-variable-dictionary" class="nav-link" data-scroll-target="#variable-dictionary"><span class="header-section-number">3.3</span> Variable Dictionary</a></li>
+  <li><a href="#core-cleaning" id="toc-core-cleaning" class="nav-link" data-scroll-target="#core-cleaning"><span class="header-section-number">3.4</span> Core Cleaning</a></li>
+  <li><a href="#define-units-of-analysis-avoid-double-counting" id="toc-define-units-of-analysis-avoid-double-counting" class="nav-link" data-scroll-target="#define-units-of-analysis-avoid-double-counting"><span class="header-section-number">3.5</span> Define Units of Analysis (avoid double-counting)</a></li>
+  <li><a href="#descriptive-summaries-context" id="toc-descriptive-summaries-context" class="nav-link" data-scroll-target="#descriptive-summaries-context"><span class="header-section-number">3.6</span> Descriptive Summaries (context)</a></li>
+  <li><a href="#visual-diagnostics" id="toc-visual-diagnostics" class="nav-link" data-scroll-target="#visual-diagnostics"><span class="header-section-number">3.7</span> Visual Diagnostics</a></li>
+  </ul></li>
+  <li><a href="#building-an-interactive-dashboard-with-r-shiny" id="toc-building-an-interactive-dashboard-with-r-shiny" class="nav-link" data-scroll-target="#building-an-interactive-dashboard-with-r-shiny"><span class="header-section-number">4</span> Building an Interactive Dashboard with R Shiny</a>
+  <ul class="collapse">
+  <li><a href="#visualisation-1" id="toc-visualisation-1" class="nav-link" data-scroll-target="#visualisation-1"><span class="header-section-number">4.1</span> Visualisation 1</a></li>
+  <li><a href="#visualisation-2" id="toc-visualisation-2" class="nav-link" data-scroll-target="#visualisation-2"><span class="header-section-number">4.2</span> Visualisation 2</a></li>
+  <li><a href="#visualisation-3-and-further-analysis" id="toc-visualisation-3-and-further-analysis" class="nav-link" data-scroll-target="#visualisation-3-and-further-analysis"><span class="header-section-number">4.3</span> Visualisation 3 and further Analysis</a></li>
+  </ul></li>
+  <li><a href="#critical-engagement-with-copilot" id="toc-critical-engagement-with-copilot" class="nav-link" data-scroll-target="#critical-engagement-with-copilot"><span class="header-section-number">5</span> Critical Engagement with Copilot</a>
+  <ul class="collapse">
+  <li><a href="#example-1-faster-scaffolding-for-repetitive-code" id="toc-example-1-faster-scaffolding-for-repetitive-code" class="nav-link" data-scroll-target="#example-1-faster-scaffolding-for-repetitive-code"><span class="header-section-number">5.1</span> <strong>Example 1: Faster scaffolding for repetitive code</strong></a></li>
+  <li><a href="#example-2-resolving-inconsistent-variable-naming-without-re-collecting-data" id="toc-example-2-resolving-inconsistent-variable-naming-without-re-collecting-data" class="nav-link" data-scroll-target="#example-2-resolving-inconsistent-variable-naming-without-re-collecting-data"><span class="header-section-number">5.2</span> <strong>Example 2: Resolving inconsistent variable naming without re-collecting data</strong></a></li>
+  </ul></li>
+  <li><a href="#example-3-improving-shiny-robustness-after-earlier-failures" id="toc-example-3-improving-shiny-robustness-after-earlier-failures" class="nav-link" data-scroll-target="#example-3-improving-shiny-robustness-after-earlier-failures"><span class="header-section-number">6</span> <strong>Example 3: Improving Shiny robustness after earlier failures</strong></a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Are Songs Really Getting Shorter in Recent Decades?</h1>
+<p class="subtitle lead">Computational Social Science Analysis of Music Metadata</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p><br></p>
+<section id="introduction-and-social-science-significance" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction-and-social-science-significance"><span class="header-section-number">1</span> Introduction and Social Science Significance</h2>
+<p>This report examines whether recorded music tracks have become shorter between 2000 and 2025 using metadata from the MusicBrainz public API covering nearly 15,000 recordings. It asks whether changes in track length align with broader shifts in music distribution, particularly the move toward algorithmic streaming and short-form video platforms.</p>
+<p>Rather than treating track duration as a purely artistic choice, the study conceptualises it as a production outcome shaped by platformisation and attention economics. Following <span class="citation" data-cites="prey2020">(<a href="#ref-prey2020" role="doc-biblioref">Prey 2020</a>)</span>, platform infrastructures leave observable traces in cultural production; here, track length is analysed as a measurable indicator of how platform-era dynamics may influence musical norms across genres and eras. MusicBrainz enables this analysis by providing open, reproducible access to production metadata beyond proprietary streaming platforms.</p>
+<section id="research-questions" class="level3" data-number="1.1">
+<h3 data-number="1.1" class="anchored" data-anchor-id="research-questions"><span class="header-section-number">1.1</span> Research Questions</h3>
+<p>The primary research question is:</p>
+<ul>
+<li><strong>RQ1: How has track length changed over time between 2000 and 2025?</strong></li>
+</ul>
+<p>Two sub-questions further contextualise the overall trend:</p>
+<ul>
+<li><p><strong>RQ2:</strong> <strong>Does track duration vary systematically across distinct sociotechnical eras?</strong></p></li>
+<li><p><strong>RQ3: Do different genres exhibit distinct track-length trends?</strong></p></li>
+</ul>
+</section>
+</section>
+<section id="automated-data-collection-api" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="automated-data-collection-api"><span class="header-section-number">2</span> Automated Data Collection (API)</h2>
+<p>Following the automated data collection decision tree (Sonmez, 2025), two sequential decisions were made:</p>
+<ol type="1">
+<li><strong>API vs.&nbsp;web scraping?</strong> → MusicBrainz provides a public RESTful API (WS/2) returning machine-readable JSON. API was used to enable “pure” data collection without legal ambiguity or HTML parsing fragility.</li>
+<li><strong>Wrapper package vs.&nbsp;custom function?</strong> → While a community wrapper exists, the original one has not been maintained since 2017. For this analsyis, a custom request function (<code>mb_get</code>) was developed to ensure full control over rate-limiting, reproducibility, and compatibility with this study’s offset-sampling strategy.</li>
+</ol>
+<p>The collection pipeline is implemented in <code>R/01_collect_data.R</code> and <code>R/helpers.R</code> (not executed here for fast rendering).</p>
+<p>Below, <strong>key methodological decisions</strong> are documented; full implementation is available in the submitted files. Output: <code>data/raw/musicbrainz_raw.csv</code>.</p>
+<section id="reproducible-setup" class="level3" data-number="2.1">
+<h3 data-number="2.1" class="anchored" data-anchor-id="reproducible-setup"><span class="header-section-number">2.1</span> Reproducible Setup</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href="">Code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(dplyr, purrr, stringr, readr, tibble, httr, jsonlite)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Helper functions expected in R/helpers.R: mb_get(), safe_year(), get_first_artist_name(), classify_era()</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/helpers.R"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="define-a-sampling-frame-genre-tags-clusters" class="level3" data-number="2.2">
+<h3 data-number="2.2" class="anchored" data-anchor-id="define-a-sampling-frame-genre-tags-clusters"><span class="header-section-number">2.2</span> Define a Sampling Frame (genre tags → clusters)</h3>
+<p>To support genre comparison (RQ3), recordings are sampled using a predefined set of genre tags chosen to best represent the three focal genre categories. Each tag is then mapped to a broader analytical cluster, ensuring that genre groupings remain interpretable and consistent throughout the cleaning workflow and the Shiny application.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href="">Code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>tags_mainstream <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"pop"</span>, <span class="st">"dance-pop"</span>, <span class="st">"edm"</span>, <span class="st">"electronic"</span>, <span class="st">"dance"</span>, <span class="st">"hip hop"</span>, <span class="st">"trap"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"hyperpop"</span>, <span class="st">"cloud rap"</span>, <span class="st">"plugg"</span>, <span class="st">"lo-fi hip hop"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"synthwave"</span>, <span class="st">"vaporwave"</span>, <span class="st">"emo rap"</span>, <span class="st">"chillwave"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>tags_underground <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"experimental"</span>, <span class="st">"noise"</span>, <span class="st">"black metal"</span>, <span class="st">"industrial"</span>, <span class="st">"post-punk"</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"power electronics"</span>, <span class="st">"idm"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"dark ambient"</span>, <span class="st">"drone"</span>, <span class="st">"avant-garde"</span>, <span class="st">"breakcore"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"experimental rock"</span>, <span class="st">"anarcho-punk"</span>, <span class="st">"underground hip hop"</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>tags_structured <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"classical"</span>, <span class="st">"jazz"</span>, <span class="st">"jazz fusion"</span>, <span class="st">"ambient"</span>, <span class="st">"folk"</span>, <span class="st">"acoustic"</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"progressive rock"</span>, <span class="st">"progressive metal"</span>, <span class="st">"art rock"</span>, <span class="st">"chamber"</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="st">"symphony"</span>, <span class="st">"orchestral"</span>, <span class="st">"contemporary classical"</span>, <span class="st">"soul"</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>tag_map <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">genre_tag =</span> <span class="fu">c</span>(tags_mainstream, tags_underground, tags_structured),</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">genre_cluster =</span> <span class="fu">c</span>(</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rep</span>(<span class="st">"Mainstream/Commercial"</span>, <span class="fu">length</span>(tags_mainstream)),</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rep</span>(<span class="st">"Underground/Alternative"</span>, <span class="fu">length</span>(tags_underground)),</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rep</span>(<span class="st">"Structured/Classical"</span>, <span class="fu">length</span>(tags_structured))  </span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="build-the-api-query-time-bounded-tag-bounded" class="level3" data-number="2.3">
+<h3 data-number="2.3" class="anchored" data-anchor-id="build-the-api-query-time-bounded-tag-bounded"><span class="header-section-number">2.3</span> Build the API Query (time-bounded + tag-bounded)</h3>
+<p>MusicBrainz search requires Lucene syntax for filtering. Combining tag and date constraints ensures results align with the study period (2000–2025) and target musical contexts.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true" href="">Code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>build_query <span class="ot">&lt;-</span> <span class="cf">function</span>(tag, start_date, end_date) {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sprintf</span>(<span class="st">'tag:"%s" AND firstreleasedate:[%s TO %s]'</span>, tag, start_date, end_date)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="ethical-request-management-and-json-parsing-custom-wrapper" class="level3" data-number="2.4">
+<h3 data-number="2.4" class="anchored" data-anchor-id="ethical-request-management-and-json-parsing-custom-wrapper"><span class="header-section-number">2.4</span> Ethical Request Management and JSON Parsing (Custom Wrapper)</h3>
+<p>The custom <code>mb_get</code> wrapper (in <code>R/helpers.R</code>) centralises the HTTP request pipeline to ensure robust and ethical data collection. By encapsulating the <code>httr::GET</code> call, this function strictly implements two critical points:</p>
+<ul>
+<li><p><strong>Rate limiting</strong> (<code>Sys.sleep(1.1)</code>): ≥1s pauses to avoid overloading the server.</p></li>
+<li><p><strong>Identification</strong>: A custom User-Agent header is included to ensuring the script remains identifiable to the API provider.</p></li>
+</ul>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href="">Code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mb_get <span class="ot">&lt;-</span> <span class="cf">function</span>(url, <span class="at">query =</span> <span class="fu">list</span>(), <span class="at">pause_sec =</span> <span class="fl">1.1</span>) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">Sys.sleep</span>(pause_sec)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  resp <span class="ot">&lt;-</span> httr<span class="sc">::</span><span class="fu">GET</span>(</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">url =</span> url,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">query =</span> query,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    httr<span class="sc">::</span><span class="fu">user_agent</span>(<span class="st">"SOCS0100-UCL-Student/1.0 (Track Length Analysis)"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  httr<span class="sc">::</span><span class="fu">stop_for_status</span>(resp)</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  txt <span class="ot">&lt;-</span> httr<span class="sc">::</span><span class="fu">content</span>(resp, <span class="at">as =</span> <span class="st">"text"</span>, <span class="at">encoding =</span> <span class="st">"UTF-8"</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  jsonlite<span class="sc">::</span><span class="fu">fromJSON</span>(txt, <span class="at">simplifyDataFrame =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="reduce-top-of-search-bias-with-reproducible-offset-sampling" class="level3" data-number="2.5">
+<h3 data-number="2.5" class="anchored" data-anchor-id="reduce-top-of-search-bias-with-reproducible-offset-sampling"><span class="header-section-number">2.5</span> Reduce “top-of-search” Bias with Reproducible Offset Sampling</h3>
+<p>Because API results are usually ranked (e.g., by popularity), only taking the first few pages would over-represent highly visible recordings. Instead, the script lists all possible page starting points (offsets) from the total number of matches and randomly chooses a subset to query, so the sample spans more of the catalogue. By setting <code>set.seed(122)</code>, the same randomly chosen pages are used every time the analysis is repeated. Finally, the <code>pages_per_tag</code> limits retrieval to 400 recordings per genre. This constraint balances statistical coverage with computational efficiency, ensuring the scraping remains ‘polite’ by strictly minimizing unnecessary server load.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-5-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-5-1" role="tab" aria-controls="tabset-5-1" aria-selected="true" href="">Code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">122</span>)        <span class="co"># reproducible sampling</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>limit <span class="ot">&lt;-</span> <span class="fl">100.</span>        <span class="co"># max items per page (MusicBrainz API limit)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>pages_per_tag <span class="ot">&lt;-</span> <span class="dv">4</span>   <span class="co"># manageable runtime</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>choose_offsets <span class="ot">&lt;-</span> <span class="cf">function</span>(n_hits, limit, pages_per_tag, <span class="at">random =</span> <span class="cn">TRUE</span>) {</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  offsets <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="fu">max</span>(<span class="dv">0</span>, n_hits <span class="sc">-</span> <span class="dv">1</span>), <span class="at">by =</span> limit)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Sample offsets randomly to reduce ranking bias</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (random) <span class="fu">sort</span>(<span class="fu">sample</span>(offsets, <span class="at">size =</span> <span class="fu">min</span>(<span class="fu">length</span>(offsets), pages_per_tag))) <span class="cf">else</span> offsets[<span class="dv">1</span><span class="sc">:</span>pages_per_tag]</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="parse-transform-and-clean" class="level3" data-number="2.6">
+<h3 data-number="2.6" class="anchored" data-anchor-id="parse-transform-and-clean"><span class="header-section-number">2.6</span> Parse, Transform and Clean</h3>
+<p>API responses are semi-structured, nested JSON objects. The <code>extract_recordings()</code> function flattens key fields (including nested artist credits), converts milliseconds to seconds, and applies light bounds checks (30–1800 seconds; 2000–2025) to remove obvious noise. The raw dataset is then assembled, labelled (cluster + era), deduplicated at the <code>recording_id</code> × <code>genre_tag</code> level, and saved for downstream cleaning (<code>R/02_clean_data.R</code>) and Shiny integration.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>extract_recordings <span class="ot">&lt;-</span> <span class="cf">function</span>(rec, tag) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">recording_id       =</span> rec<span class="sc">$</span>id,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">title              =</span> rec<span class="sc">$</span>title,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">length_ms          =</span> rec<span class="sc">$</span>length,  </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">artist_name        =</span> purrr<span class="sc">::</span><span class="fu">map_chr</span>(rec<span class="sc">$</span><span class="st">`</span><span class="at">artist-credit</span><span class="st">`</span>, get_first_artist_name),</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">first_release_date =</span> rec<span class="sc">$</span><span class="st">`</span><span class="at">first-release-date</span><span class="st">`</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">release_year       =</span> <span class="fu">safe_year</span>(rec<span class="sc">$</span><span class="st">`</span><span class="at">first-release-date</span><span class="st">`</span>),</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">genre_tag          =</span> tag</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">title       =</span> stringr<span class="sc">::</span><span class="fu">str_squish</span>(title),</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">artist_name =</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(<span class="fu">is.na</span>(artist_name) <span class="sc">|</span> artist_name <span class="sc">==</span> <span class="st">""</span>, <span class="st">"Unknown"</span>, artist_name),</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">length_sec  =</span> length_ms <span class="sc">/</span> <span class="dv">1000</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Light cleaning so the dataset is already Shiny-friendly.</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># (Full wrangling happens in 02_clean_data.R)</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(recording_id),</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(length_ms),</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>      length_ms <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>      <span class="sc">!</span><span class="fu">is.na</span>(release_year),</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>      release_year <span class="sc">&gt;=</span> <span class="dv">2000</span>,</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>      release_year <span class="sc">&lt;=</span> <span class="dv">2025</span>,</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>      length_sec <span class="sc">&gt;=</span> <span class="dv">30</span>,</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>      length_sec <span class="sc">&lt;=</span> <span class="dv">1800</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="fu">distinct</span>(recording_id, genre_tag, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Cluster and era labelling </span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>raw <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(rows) <span class="sc">%&gt;%</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">left_join</span>(tag_map, <span class="at">by =</span> <span class="st">"genre_tag"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">genre_cluster =</span> <span class="fu">if_else</span>(<span class="fu">is.na</span>(genre_cluster), <span class="st">"Other"</span>, genre_cluster),</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">era =</span> <span class="fu">classify_era</span>(release_year)</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(era)) <span class="sc">%&gt;%</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(recording_id, genre_tag, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Final assembly + save (performed in R/01_collect_data.R)</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">"data/raw"</span>, <span class="at">recursive =</span> <span class="cn">TRUE</span>, <span class="at">showWarnings =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>readr<span class="sc">::</span><span class="fu">write_csv</span>(raw, <span class="st">"data/raw/musicbrainz_raw.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="data-exploration-and-contextualisation" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="data-exploration-and-contextualisation"><span class="header-section-number">3</span> Data Exploration and Contextualisation</h2>
+<p>This section turns the raw API export (<code>data/raw/musicbrainz_raw.csv</code>) into analysis-ready datasets and documents the final dataset structure (dimensions, types, variables). All wrangling is implemented in <code>R/02_clean_data.R</code>; the key steps and outputs are reproduced below. For social science significance, refer to the introduction.</p>
+<section id="raw-dataset-overview" class="level3" data-number="3.1">
+<h3 data-number="3.1" class="anchored" data-anchor-id="raw-dataset-overview"><span class="header-section-number">3.1</span> Raw Dataset Overview</h3>
+<p>Each row in raw represents a recording × genre_tag returned by MusicBrainz (so the same recording can appear multiple times if it matched multiple tags). The table below reports total rows, columns, and distinct recordings.</p>
+<p>The table below reports: total rows, total columns, and the number of distinct recording_ids.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-6-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-1" role="tab" aria-controls="tabset-6-1" aria-selected="true" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-6-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-6-2" role="tab" aria-controls="tabset-6-2" aria-selected="false" href="">Output</a></li></ul>
+<div class="tab-content">
+<div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>raw_dims <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">rows =</span> <span class="fu">nrow</span>(raw),</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">cols =</span> <span class="fu">ncol</span>(raw),</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">unique_recordings =</span> dplyr<span class="sc">::</span><span class="fu">n_distinct</span>(raw<span class="sc">$</span>recording_id)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(raw_dims, <span class="at">caption =</span> <span class="st">"Raw dataset dimensions (output of API collection)."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-6-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-6-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Raw dataset dimensions (output of API collection).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">rows</th>
+<th style="text-align: right;">cols</th>
+<th style="text-align: right;">unique_recordings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">15234</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">14971</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<ul>
+<li><p>Tag-level analyses (RQ3) use the tagged unit: 15,234 rows (recording × tag).</p></li>
+<li><p>Overall trend/era analyses (RQ1/RQ2) use a deduplicated unit later: 14,971 unique recordings (one row per recording_id).</p></li>
+</ul>
+</section>
+<section id="data-structure-and-completeness" class="level3" data-number="3.2">
+<h3 data-number="3.2" class="anchored" data-anchor-id="data-structure-and-completeness"><span class="header-section-number">3.2</span> Data Structure and Completeness</h3>
+<p>This diagnostic checks: (a) variable types as currently stored in the raw CSV, and (b) missingness for key analytic fields. The dataset consists primarily of character variables (identifiers, artist names, genre labels) and numeric variables capturing duration and release year. Crucially, missingness is essentially zero, so later trends are not driven by selective missing data</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-7-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-1" role="tab" aria-controls="tabset-7-1" aria-selected="true" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-7-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-7-2" role="tab" aria-controls="tabset-7-2" aria-selected="false" href="">Output</a></li></ul>
+<div class="tab-content">
+<div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(skimr)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>skimr<span class="sc">::</span><span class="fu">skim</span>(raw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-7-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-7-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Data summary</caption>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Name</td>
+<td style="text-align: left;">raw</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Number of rows</td>
+<td style="text-align: left;">15234</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Number of columns</td>
+<td style="text-align: left;">10</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">_______________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Column type frequency:</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">________________________</td>
+<td style="text-align: left;"></td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Group variables</td>
+<td style="text-align: left;">None</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: character</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 24%">
+<col style="width: 12%">
+<col style="width: 18%">
+<col style="width: 5%">
+<col style="width: 5%">
+<col style="width: 7%">
+<col style="width: 11%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">min</th>
+<th style="text-align: right;">max</th>
+<th style="text-align: right;">empty</th>
+<th style="text-align: right;">n_unique</th>
+<th style="text-align: right;">whitespace</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">recording_id</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">36</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">14971</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">title</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">286</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">14300</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">artist_name</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">53</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">5809</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">first_release_date</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3908</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">genre_tag</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">43</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">genre_cluster</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">20</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">era</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">27</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Variable type: numeric</strong></p>
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 9%">
+<col style="width: 13%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 5%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">skim_variable</th>
+<th style="text-align: right;">n_missing</th>
+<th style="text-align: right;">complete_rate</th>
+<th style="text-align: right;">mean</th>
+<th style="text-align: right;">sd</th>
+<th style="text-align: right;">p0</th>
+<th style="text-align: right;">p25</th>
+<th style="text-align: right;">p50</th>
+<th style="text-align: right;">p75</th>
+<th style="text-align: right;">p100</th>
+<th style="text-align: left;">hist</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">length_ms</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">277777.10</td>
+<td style="text-align: right;">172662.28</td>
+<td style="text-align: right;">30000</td>
+<td style="text-align: right;">182003.2</td>
+<td style="text-align: right;">241877.50</td>
+<td style="text-align: right;">323000</td>
+<td style="text-align: right;">1798146.00</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">release_year</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2010.69</td>
+<td style="text-align: right;">7.02</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">2005.0</td>
+<td style="text-align: right;">2010.00</td>
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">2025.00</td>
+<td style="text-align: left;">▇▇▆▃▃</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">length_sec</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">277.78</td>
+<td style="text-align: right;">172.66</td>
+<td style="text-align: right;">30</td>
+<td style="text-align: right;">182.0</td>
+<td style="text-align: right;">241.88</td>
+<td style="text-align: right;">323</td>
+<td style="text-align: right;">1798.15</td>
+<td style="text-align: left;">▇▁▁▁▁</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Note on types: in the raw CSV, genre_cluster and era appear as character fields (because CSVs do not preserve factor classes). They are explicitly converted to factors during cleaning, thus the final summary in the variable dictionary below presents it as such.</p>
+</section>
+<section id="variable-dictionary" class="level3" data-number="3.3">
+<h3 data-number="3.3" class="anchored" data-anchor-id="variable-dictionary"><span class="header-section-number">3.3</span> Variable Dictionary</h3>
+<p><strong>Unit of observation</strong>: Individual recording (musical track) retrieved as semi-structured JSON from the MusicBrainz <code>/ws/2/recording/</code> endpoint.</p>
+<p><strong>Operationalization</strong>: Track length is measured as duration in seconds; temporal change via release year grouped into three sociotechnical eras; musical context via user-generated genre tags aggregated into three analytical clusters (Mainstream/Commercial, Underground/Alternative, Classical/Structured).</p>
+<p>The table below documents all variables, distinguishing raw API fields from derived variables (computed during wrangling to support longitudinal and comparative analysis):</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-8-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-2" role="tab" aria-controls="tabset-8-2" aria-selected="false" href="">Output</a></li></ul>
+<div class="tab-content">
+<div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>var_dict <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">variable =</span> <span class="fu">c</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"recording_id"</span>, <span class="st">"title"</span>, <span class="st">"artist_name"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">"length_ms"</span>, <span class="st">"length_sec"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">"first_release_date"</span>, <span class="st">"release_year"</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"genre_tag"</span>, <span class="st">"genre_cluster"</span>, <span class="st">"era"</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="fu">c</span>(</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"character"</span>, <span class="st">"character"</span>, <span class="st">"character"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"numeric"</span>, <span class="st">"numeric"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"character"</span>, <span class="st">"integer"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"character"</span>, <span class="st">"factor"</span>, <span class="st">"ordered factor"</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">description =</span> <span class="fu">c</span>(</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">"MusicBrainz recording identifier (track-level ID)."</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Track title (whitespace-normalised for consistency)."</span>,</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">"First credited artist name (flattened from nested artist-credit)."</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Track duration in milliseconds (MusicBrainz 'length' field)."</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Track duration in seconds (derived: length_ms / 1000)."</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"First release date string returned by the API (may be YYYY / YYYY-MM / YYYY-MM-DD)."</span>,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Year extracted from first_release_date (used for time trends)."</span>,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Genre tag used in the API query (sampling handle, not an objective genre label)."</span>,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Broader analytical cluster mapped from genre_tag."</span>,</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Sociotechnical era derived from release_year (3-era model)."</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(var_dict, <span class="at">caption =</span> <span class="st">"Variable dictionary for the MusicBrainz dataset."</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-8-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-8-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Variable dictionary for the MusicBrainz dataset.</caption>
+<colgroup>
+<col style="width: 16%">
+<col style="width: 12%">
+<col style="width: 71%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">variable</th>
+<th style="text-align: left;">type</th>
+<th style="text-align: left;">description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">recording_id</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">MusicBrainz recording identifier (track-level ID).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">title</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">Track title (whitespace-normalised for consistency).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">artist_name</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">First credited artist name (flattened from nested artist-credit).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">length_ms</td>
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">Track duration in milliseconds (MusicBrainz ‘length’ field).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">length_sec</td>
+<td style="text-align: left;">numeric</td>
+<td style="text-align: left;">Track duration in seconds (derived: length_ms / 1000).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">first_release_date</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">First release date string returned by the API (may be YYYY / YYYY-MM / YYYY-MM-DD).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">release_year</td>
+<td style="text-align: left;">integer</td>
+<td style="text-align: left;">Year extracted from first_release_date (used for time trends).</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">genre_tag</td>
+<td style="text-align: left;">character</td>
+<td style="text-align: left;">Genre tag used in the API query (sampling handle, not an objective genre label).</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">genre_cluster</td>
+<td style="text-align: left;">factor</td>
+<td style="text-align: left;">Broader analytical cluster mapped from genre_tag.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">era</td>
+<td style="text-align: left;">ordered factor</td>
+<td style="text-align: left;">Sociotechnical era derived from release_year (3-era model).</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="core-cleaning" class="level3" data-number="3.4">
+<h3 data-number="3.4" class="anchored" data-anchor-id="core-cleaning"><span class="header-section-number">3.4</span> Core Cleaning</h3>
+<p>Cleaning ensures consistency for analysis and Shiny, preventing silent errors from malformed text, type mismatches, or out-of-scope observations in these steps:</p>
+<ol type="1">
+<li>Standardize text fields: Apply <code>str_squish()</code> to title and artist_name to normalize whitespace, preventing duplicate labels.</li>
+<li>Enforce variable types: Change <code>release_year</code> to integer and duration fields to numeric, preventing implicit type conversion errors during summarization or plotting.</li>
+<li>Recompute derived variables: Recalculate era from <code>release_year</code> using <code>classify_era()</code> (defined in <code>helpers.R</code>) to centralize era definitions and ensure consistency across scripts</li>
+<li>Apply defensive filtering: Retain only valid analytic cases within study scope</li>
+</ol>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-9-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-1" role="tab" aria-controls="tabset-9-1" aria-selected="true" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-9-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-9-2" role="tab" aria-controls="tabset-9-2" aria-selected="false" href="">Output</a></li></ul>
+<div class="tab-content">
+<div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>era_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Pre-Convergence (2000–2012)"</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Platform Emergence (2013–2016)"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Dual Algorithmization (2017+)"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>cluster_levels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Mainstream/Commercial"</span>,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Underground/Alternative"</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Classical/Structured"</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Other"</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>clean_tagged <span class="ot">&lt;-</span> raw <span class="sc">%&gt;%</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Text cleaning</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">title       =</span> stringr<span class="sc">::</span><span class="fu">str_squish</span>(title),</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">artist_name =</span> stringr<span class="sc">::</span><span class="fu">str_squish</span>(artist_name),</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Type enforcement</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">release_year =</span> <span class="fu">as.integer</span>(release_year),</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">length_ms    =</span> <span class="fu">as.numeric</span>(length_ms),</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">length_sec   =</span> <span class="fu">as.numeric</span>(length_sec),</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Recompute derived variables</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">era =</span> <span class="fu">classify_era</span>(release_year),</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">era =</span> <span class="fu">factor</span>(era, <span class="at">levels =</span> era_levels, <span class="at">ordered =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ensure cluster is never missing/blank</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">genre_cluster =</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(genre_cluster) <span class="sc">|</span> genre_cluster <span class="sc">==</span> <span class="st">""</span>,</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Other"</span>,</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>      genre_cluster</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">genre_cluster =</span> <span class="fu">factor</span>(genre_cluster, <span class="at">levels =</span> cluster_levels)</span>
+<span id="cb10-36"><a href="#cb10-36" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-37"><a href="#cb10-37" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Defensive filtering: keep only valid analytic cases</span></span>
+<span id="cb10-38"><a href="#cb10-38" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(</span>
+<span id="cb10-39"><a href="#cb10-39" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(recording_id),</span>
+<span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(title) <span class="sc">&amp;</span> title <span class="sc">!=</span> <span class="st">""</span>,</span>
+<span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(release_year),</span>
+<span id="cb10-42"><a href="#cb10-42" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">between</span>(release_year, <span class="dv">2000</span>, <span class="dv">2025</span>),</span>
+<span id="cb10-43"><a href="#cb10-43" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(length_sec),</span>
+<span id="cb10-44"><a href="#cb10-44" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">between</span>(length_sec, <span class="dv">30</span>, <span class="dv">1800</span>),</span>
+<span id="cb10-45"><a href="#cb10-45" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(genre_tag) <span class="sc">&amp;</span> genre_tag <span class="sc">!=</span> <span class="st">""</span>,</span>
+<span id="cb10-46"><a href="#cb10-46" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(era),</span>
+<span id="cb10-47"><a href="#cb10-47" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span><span class="fu">is.na</span>(genre_cluster)</span>
+<span id="cb10-48"><a href="#cb10-48" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb10-49"><a href="#cb10-49" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Unit for RQ3: unique combination of track + tag</span></span>
+<span id="cb10-50"><a href="#cb10-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">distinct</span>(recording_id, genre_tag, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb10-51"><a href="#cb10-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-52"><a href="#cb10-52" aria-hidden="true" tabindex="-1"></a>post_clean_dims <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb10-53"><a href="#cb10-53" aria-hidden="true" tabindex="-1"></a>  <span class="at">rows =</span> <span class="fu">nrow</span>(clean_tagged),</span>
+<span id="cb10-54"><a href="#cb10-54" aria-hidden="true" tabindex="-1"></a>  <span class="at">unique_recordings =</span> dplyr<span class="sc">::</span><span class="fu">n_distinct</span>(clean_tagged<span class="sc">$</span>recording_id)</span>
+<span id="cb10-55"><a href="#cb10-55" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-9-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-9-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Dimensions after cleaning (tagged unit: recording × genre_tag).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">rows</th>
+<th style="text-align: right;">unique_recordings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">15234</td>
+<td style="text-align: right;">14971</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Output: <code>clean_tagged</code> (one row per recording × genre_tag; 15234 observations, 14971 unique recordings).</p>
+</section>
+<section id="define-units-of-analysis-avoid-double-counting" class="level3" data-number="3.5">
+<h3 data-number="3.5" class="anchored" data-anchor-id="define-units-of-analysis-avoid-double-counting"><span class="header-section-number">3.5</span> Define Units of Analysis (avoid double-counting)</h3>
+<p>Because a recording may appear under multiple tags, overall trends should not count the same track multiple times. The unique unit selects one row per <code>recording_id</code> using a stable rule <code>(arrange(recording_id, genre_tag) %&gt;% slice(1))</code>, ensuring reproducibility.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-10-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-2" role="tab" aria-controls="tabset-10-2" aria-selected="false" href="">Output</a></li></ul>
+<div class="tab-content">
+<div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>clean_unique <span class="ot">&lt;-</span> clean_tagged <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(recording_id, genre_tag) <span class="sc">%&gt;%</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(recording_id) <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>unique_dims <span class="ot">&lt;-</span> tibble<span class="sc">::</span><span class="fu">tibble</span>(</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">rows =</span> <span class="fu">nrow</span>(clean_unique),</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">unique_recordings =</span> dplyr<span class="sc">::</span><span class="fu">n_distinct</span>(clean_unique<span class="sc">$</span>recording_id)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-10-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-10-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Dimensions of unique unit (one row per recording).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">rows</th>
+<th style="text-align: right;">unique_recordings</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">14971</td>
+<td style="text-align: right;">14971</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="descriptive-summaries-context" class="level3" data-number="3.6">
+<h3 data-number="3.6" class="anchored" data-anchor-id="descriptive-summaries-context"><span class="header-section-number">3.6</span> Descriptive Summaries (context)</h3>
+<p>These summaries verify that the dataset spans the intended time window and that track lengths fall in plausible ranges. They also provide baseline comparisons by era and cluster that are referenced later in interpretation.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-11-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-1" role="tab" aria-controls="tabset-11-1" aria-selected="true" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-11-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-11-2" role="tab" aria-controls="tabset-11-2" aria-selected="false" href="">Output</a></li></ul>
+<div class="tab-content">
+<div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>summary_overall <span class="ot">&lt;-</span> clean_unique <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_tracks   =</span> <span class="fu">n</span>(),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_year   =</span> <span class="fu">min</span>(release_year),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">max_year   =</span> <span class="fu">max</span>(release_year),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_len   =</span> <span class="fu">mean</span>(length_sec),</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_len =</span> <span class="fu">median</span>(length_sec),</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">p25_len    =</span> <span class="fu">quantile</span>(length_sec, <span class="fl">0.25</span>),</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">p75_len    =</span> <span class="fu">quantile</span>(length_sec, <span class="fl">0.75</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>summary_era <span class="ot">&lt;-</span> clean_unique <span class="sc">%&gt;%</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(era) <span class="sc">%&gt;%</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">n          =</span> <span class="fu">n</span>(),</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_len   =</span> <span class="fu">mean</span>(length_sec),</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_len =</span> <span class="fu">median</span>(length_sec),</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>summary_cluster <span class="ot">&lt;-</span> clean_tagged <span class="sc">%&gt;%</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(genre_cluster) <span class="sc">%&gt;%</span></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">n          =</span> <span class="fu">n</span>(),</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">mean_len   =</span> <span class="fu">mean</span>(length_sec),</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">median_len =</span> <span class="fu">median</span>(length_sec),</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(n))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-11-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-11-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Overall descriptive statistics (unique unit).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;">n_tracks</th>
+<th style="text-align: right;">min_year</th>
+<th style="text-align: right;">max_year</th>
+<th style="text-align: right;">mean_len</th>
+<th style="text-align: right;">median_len</th>
+<th style="text-align: right;">p25_len</th>
+<th style="text-align: right;">p75_len</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">14971</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: right;">2025</td>
+<td style="text-align: right;">277.9697</td>
+<td style="text-align: right;">242</td>
+<td style="text-align: right;">182.735</td>
+<td style="text-align: right;">323</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Track length summary by sociotechnical era (unique unit).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">era</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">mean_len</th>
+<th style="text-align: right;">median_len</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Pre-Convergence (2000–2012)</td>
+<td style="text-align: right;">9326</td>
+<td style="text-align: right;">288.6098</td>
+<td style="text-align: right;">252.6065</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Platform Emergence (2013–2016)</td>
+<td style="text-align: right;">2588</td>
+<td style="text-align: right;">291.2717</td>
+<td style="text-align: right;">251.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Dual Algorithmization (2017+)</td>
+<td style="text-align: right;">3057</td>
+<td style="text-align: right;">234.2486</td>
+<td style="text-align: right;">205.2500</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<caption>Track length summary by genre cluster (tagged unit).</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;">genre_cluster</th>
+<th style="text-align: right;">n</th>
+<th style="text-align: right;">mean_len</th>
+<th style="text-align: right;">median_len</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Classical/Structured</td>
+<td style="text-align: right;">5401</td>
+<td style="text-align: right;">301.7616</td>
+<td style="text-align: right;">257.453</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Underground/Alternative</td>
+<td style="text-align: right;">5012</td>
+<td style="text-align: right;">302.6891</td>
+<td style="text-align: right;">264.209</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mainstream/Commercial</td>
+<td style="text-align: right;">4821</td>
+<td style="text-align: right;">225.0081</td>
+<td style="text-align: right;">214.626</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Median track length is 242 seconds with substantial variation (IQR: 183–323s). Track length remains stable in Pre-Convergence and Platform Emergence eras (~252s median), but drops sharply to 205 seconds in Dual Algorithmization (2017+); a 16% decline suggesting platformisation pressures reshape production norms. This decline is most pronounced in Mainstream/Commercial tracks (215s median) versus Classical/Structured and Underground/Alternative genres (~260s), suggesting differential exposure to platform incentives across musical contexts.</p>
+</section>
+<section id="visual-diagnostics" class="level3" data-number="3.7">
+<h3 data-number="3.7" class="anchored" data-anchor-id="visual-diagnostics"><span class="header-section-number">3.7</span> Visual Diagnostics</h3>
+<p>These plots are checks for (a) plausible duration distribution and (b) full coverage of the 2000–2025 window.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-12-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-1" role="tab" aria-controls="tabset-12-1" aria-selected="true" href="">Code</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-12-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-12-2" role="tab" aria-controls="tabset-12-2" aria-selected="false" href="">Output</a></li></ul>
+<div class="tab-content">
+<div id="tabset-12-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-12-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>p_len <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(clean_unique, <span class="fu">aes</span>(<span class="at">x =</span> length_sec)) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">bins =</span> <span class="dv">40</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"#1F4E79"</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.85</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Distribution of Track Lengths (2000–2025)"</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Unique unit: one row per recording"</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="st">"Track length (seconds)"</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Number of recordings"</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>p_year <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(clean_unique, <span class="fu">aes</span>(<span class="at">x =</span> release_year)) <span class="sc">+</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">bins =</span> <span class="dv">26</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"#2CA02C"</span>,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.85</span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">title    =</span> <span class="st">"Temporal Coverage of the Sample"</span>,</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Release years of unique recordings"</span>,</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">x        =</span> <span class="st">"Release year"</span>,</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">y        =</span> <span class="st">"Number of recordings"</span></span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>p_len</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>p_year</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-12-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-12-2-tab">
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="SOCS0100-report_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="SOCS0100-report_files/figure-html/unnamed-chunk-21-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Track lengths are right-skewed, with most recordings between 150–350 seconds and a long tail of extended tracks.This motivates using medians alongside means to reduce outlier influence. Release years span 2000–2025, with higher density in earlier years, so analyses rely on within-year and within-era summaries rather than raw counts to reflect changes in typical track length rather than catalogue size.</p>
+</section>
+</section>
+<section id="building-an-interactive-dashboard-with-r-shiny" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="building-an-interactive-dashboard-with-r-shiny"><span class="header-section-number">4</span> Building an Interactive Dashboard with R Shiny</h2>
+<p>This section documents the design logic and analytical contribution of the interactive R Shiny dashboard, built from the cleaned and aggregated MusicBrainz dataset and fully reproducible via the <code>app.R</code> file. Its purpose is to support exploratory analysis of how track length changes over time and across musical contexts, with three interactive visualisations aligned to the research questions.</p>
+<p>The dashboard uses a shared filtering system, so all visualisations respond consistently to user input.This allows users to move smoothly between macro-level trends and genre-specific contexts while keeping the underlying units of analysis coherent.</p>
+<section id="visualisation-1" class="level3" data-number="4.1">
+<h3 data-number="4.1" class="anchored" data-anchor-id="visualisation-1"><span class="header-section-number">4.1</span> Visualisation 1</h3>
+<p>This visualisation plots <strong>yearly track-length summaries (median by default, mean optional) from 2000–2025</strong>, filterable by genre cluster or specific genre tags. A line chart is appropriate for identifying longitudinal trends, and the median is the default because it better represents the “typical” recording in a right‑skewed distribution where a long tail of extended tracks pulls the mean upward; users can toggle to the mean to inspect the impact of this skew directly.</p>
+<p>Across the full dataset, track length gradually declines over time, with a pronounced drop after the mid‑2010s and the lowest values around 2020; although there is a modest recovery thereafter, lengths remain well below pre‑2015 levels. The pattern is clearer in medians than means, indicating that shortening reflects shifts in typical production norms rather than just changes in extreme values, thereby answering RQ1 at a high level.</p>
+</section>
+<section id="visualisation-2" class="level3" data-number="4.2">
+<h3 data-number="4.2" class="anchored" data-anchor-id="visualisation-2"><span class="header-section-number">4.2</span> Visualisation 2</h3>
+<p>The second visualisation compares <strong>track-length distributions across three sociotechnical eras</strong> using boxplots (Pre‑Convergence 2000–2012, Platform Emergence 2013–2016, Dual Algorithmization 2017+), which summarise medians, dispersion, and outliers and are therefore well suited to show how entire distributions shift between periods.</p>
+<p>Track lengths are stable across the first two eras (medians around 250 seconds) but drop sharply after 2017 to roughly 205 seconds—a reduction of about 50 seconds (20%) accompanied by tighter clustering, indicating convergence toward standardised lengths. This contraction is most pronounced in Mainstream/Commercial genres, while Underground/Alternative tracks remain longer and more variable and Classical/Structured genres stay longest on average but exhibit modest shortening.</p>
+<p>The timing of this structural break coincides with intensified playlist curation and the rise of short-form video as a discovery channel, implying that platform-level dynamics have reshaped track-length norms, particularly in commercially oriented styles; this visualisation thus deepens understanding of RQ2 by linking era-specific distributions to broader platformisation processes.</p>
+</section>
+<section id="visualisation-3-and-further-analysis" class="level3" data-number="4.3">
+<h3 data-number="4.3" class="anchored" data-anchor-id="visualisation-3-and-further-analysis"><span class="header-section-number">4.3</span> Visualisation 3 and further Analysis</h3>
+<p>The third visualisation compares <strong>yearly track-length trends across genre clusters, with an option to switch from cluster-level comparison to a single-genre</strong> trajectory by selecting a specific tag. Overlaying clusters enables direct comparison of stylistic dynamics, while tag-level drill-downs reveal how individual genres deviate from their parent cluster without overcrowding the plot.</p>
+<p>Mainstream/Commercial tracks show the clearest and most consistent shortening over time, aligning with per‑stream money incentives and playlist-optimisation logics that favour shorter tracks in streaming-dominant genres such as hip hop and pop. Underground/Alternative tracks remain longer and more volatile, while Classical/Structured genres are longest on average and show only slight shortening, indicating weaker exposure to these platform incentives. Tag-level drill-downs highlight divergences: hip-hop subgenres (cloud rap, underground hip hop, trap) and dance/pop exhibit the steepest declines, consistent with youth-skewed audiences heavily exposed to attention‑fragmenting short-form video platforms and background listening contexts where rapid song changes sustain engagement. By contrast, rock, folk, and most classical genres show minimal shortening, suggesting partial insulation through album-oriented consumption and niche audience demographics, while jazz fusion even lengthens in recent years, hinting at resistance to standardisation pressures.</p>
+<p>Together, these patterns clarify RQ3 by showing that the same platform infrastructure produces distinct track-length trajectories across musical scenes, thereby enriching substantive understanding of the MusicBrainz data source.</p>
+</section>
+</section>
+<section id="critical-engagement-with-copilot" class="level2" data-number="5">
+<h2 data-number="5" class="anchored" data-anchor-id="critical-engagement-with-copilot"><span class="header-section-number">5</span> Critical Engagement with Copilot</h2>
+<p>GitHub Copilot was used as a collaborative coding assistant during data wrangling and Shiny development. I treated Copilot suggestions as drafts rather than authoritative solutions, evaluating them against the project’s research design, reproducibility requirements, and computational constraints.</p>
+<section id="example-1-faster-scaffolding-for-repetitive-code" class="level3" data-number="5.1">
+<h3 data-number="5.1" class="anchored" data-anchor-id="example-1-faster-scaffolding-for-repetitive-code"><span class="header-section-number">5.1</span> <strong>Example 1: Faster scaffolding for repetitive code</strong></h3>
+<p>Copilot was most useful for scaffolding repetitive code (e.g., summarise() blocks and Shiny UI elements), reducing time spent on syntax and freeing attention for methodological decisions. Its drafts were directionally correct but assumed fixed statistics, so the main learning came from refining them to match the app’s interaction logic and analytical design.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-13-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-1" role="tab" aria-controls="tabset-13-1" aria-selected="true" href="">Example: Copilot suggestion (initial scaffold)</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-2" role="tab" aria-controls="tabset-13-2" aria-selected="false" href="">What I changed (project-specific refinement)</a></li></ul>
+<div class="tab-content">
+<div id="tabset-13-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-13-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Copilot-style scaffold (I then edited to match my naming + factor levels)</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>plot_overall <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> clean_unique <span class="sc">%&gt;%</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(release_year) <span class="sc">%&gt;%</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(<span class="at">median_len =</span> <span class="fu">median</span>(length_sec, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="at">.groups =</span> <span class="st">"drop"</span>)</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(d, <span class="fu">aes</span>(release_year, median_len)) <span class="sc">+</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-13-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># I added: filtering from inputs, mean/median toggle, point option, and stable x breaks.</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>output<span class="sc">$</span>plot_overall <span class="ot">&lt;-</span> <span class="fu">renderPlot</span>({</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  stat_col <span class="ot">&lt;-</span> input<span class="sc">$</span>stat</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">data_unique_f</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">group_by</span>(release_year) <span class="sc">%&gt;%</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">median_len =</span> <span class="fu">median</span>(length_sec, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">mean_len   =</span> <span class="fu">mean</span>(length_sec, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">.groups    =</span> <span class="st">"drop"</span></span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(df, <span class="fu">aes</span>(<span class="at">x =</span> release_year, <span class="at">y =</span> .data[[stat_col]])) <span class="sc">+</span></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>(<span class="at">linewidth =</span> <span class="fl">1.1</span>, <span class="at">colour =</span> <span class="st">"#1F4E79"</span>) <span class="sc">+</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>    { <span class="cf">if</span> (<span class="fu">isTRUE</span>(input<span class="sc">$</span>show_points)) <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="fl">1.9</span>, <span class="at">colour =</span> <span class="st">"#1F4E79"</span>) } <span class="sc">+</span></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_x_continuous</span>(<span class="at">breaks =</span> scales<span class="sc">::</span><span class="fu">pretty_breaks</span>(<span class="dv">8</span>)) <span class="sc">+</span></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">12</span>)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="example-2-resolving-inconsistent-variable-naming-without-re-collecting-data" class="level3" data-number="5.2">
+<h3 data-number="5.2" class="anchored" data-anchor-id="example-2-resolving-inconsistent-variable-naming-without-re-collecting-data"><span class="header-section-number">5.2</span> <strong>Example 2: Resolving inconsistent variable naming without re-collecting data</strong></h3>
+<p>Inconsistent genre cluster labels introduced during data collection caused Shiny plots to fail due to mismatched factor levels. Re-running the API pipeline would have been costly due to rate limits, so I used Copilot to design a post-hoc label standardisation step during cleaning. While Copilot initially proposed an over-complex solution, I simplified it into a small helper function that corrected labels defensively without dropping valid data.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-14-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-14-1" role="tab" aria-controls="tabset-14-1" aria-selected="true" href="">Example 2: Standardise cluster names, refined Copilot suggestion</a></li></ul>
+<div class="tab-content">
+<div id="tabset-14-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-14-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>standardise_cluster <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> stringr<span class="sc">::</span><span class="fu">str_squish</span>(<span class="fu">as.character</span>(x))</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> dplyr<span class="sc">::</span><span class="fu">if_else</span>(<span class="fu">is.na</span>(x) <span class="sc">|</span> x <span class="sc">==</span> <span class="st">""</span>, <span class="st">"Other"</span>, x)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">recode</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    x,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Commercial/Mainstream"</span> <span class="ot">=</span> <span class="st">"Mainstream/Commercial"</span>,</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Structured/Classical"</span>  <span class="ot">=</span> <span class="st">"Classical/Structured"</span>,</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">.default =</span> x</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+<p>This solution preserved all observations, ensured consistent factor levels across scripts, and allowed the Shiny app to render correctly without re-running the API pipeline.</p>
+</section>
+</section>
+<section id="example-3-improving-shiny-robustness-after-earlier-failures" class="level2" data-number="6">
+<h2 data-number="6" class="anchored" data-anchor-id="example-3-improving-shiny-robustness-after-earlier-failures"><span class="header-section-number">6</span> <strong>Example 3: Improving Shiny robustness after earlier failures</strong></h2>
+<p>Before standardisation, the Shiny app failed due to mismatched labels and missing files. Copilot suggested adding defensive checks, which I adapted to produce clear, reproducible error messages.</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-15-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-15-1" role="tab" aria-controls="tabset-15-1" aria-selected="true" href="">Example: Defensive Checks, refined Copilot suggestion</a></li></ul>
+<div class="tab-content">
+<div id="tabset-15-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-15-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>req_files <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data/final/musicbrainz_clean_unique.csv"</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"data/final/musicbrainz_clean_tagged.csv"</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>missing <span class="ot">&lt;-</span> req_files[<span class="sc">!</span><span class="fu">file.exists</span>(req_files)]</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(missing) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Missing required file(s):</span><span class="sc">\n</span><span class="st">- "</span>,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">paste</span>(missing, <span class="at">collapse =</span> <span class="st">"</span><span class="sc">\n</span><span class="st">- "</span>),</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"</span><span class="sc">\n</span><span class="st">Run R/02_clean_data.R first."</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-prey2020" class="csl-entry" role="listitem">
+Prey, Robert. 2020. <span>“Locating Power in Platformization: Music Streaming Playlists and Curatorial Power.”</span> <em>Social Media + Society</em> 6 (2). <a href="https://doi.org/10.1177/2056305120933291">https://doi.org/10.1177/2056305120933291</a>.
+</div>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
